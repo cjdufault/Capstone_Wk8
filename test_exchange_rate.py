@@ -26,11 +26,10 @@ class GetDollarAmountTestCase(TestCase):
 
 class ConvertDollarsToCurrencyTestCase(TestCase):
         
-    @patch('get_exchange_rate', return_value=1.3)
-    @patch('convert'), return_value=6.5)
-    def test_nominal_case(self, mock_get_exchange_rate, mock_convert):
+    @patch('exchange_rate.get_exchange_rate', return_value=1.3)
+    def test_nominal_case(self, mock_get_exchange_rate):
         converted = convert_dollars_to_target(5, 'CAD')
-        expected_converted = mock_convert.return_value
+        expected_converted = convert(5, 1.3)
         
         self.assertEqual(converted, expected_converted)
 
