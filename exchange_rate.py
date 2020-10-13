@@ -18,7 +18,7 @@ def get_target_currency():
         currency = input('Enter target currency code e.g. EUR, CAD: ')
         
         # only accept three-letter currency codes
-        if len(currency) == 3:
+        if len(currency) == 3 and currency.isalpha():
             return currency.upper()
         else:
             print('Invalid currency code')
@@ -65,7 +65,7 @@ def request_rates(currency):
         
     # handle exception if connection with API fails
     except requests.exceptions.ConnectionError as e:
-        print(f'Could not establish connection with API. Cannot get exchange rate for {currency}.')
+        print(f'Couldn\'t establish connection with API. Cannot get exchange rate for {currency}.')
         return None
 
 def extract_rate(rates, currency):
