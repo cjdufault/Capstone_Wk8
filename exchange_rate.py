@@ -1,8 +1,9 @@
 """ Uses exchangeratesapi.io to get exchange rates
 Validation, error handling omitted for clarity.  """
 
-
 import requests
+
+exchange_rate_api_url = 'https://api.exchangeratesapi.io/latest'
 
 def main():
     currency = get_target_currency()
@@ -44,14 +45,13 @@ def convert_dollars_to_target(dollars, target_currency):
 
 def get_exchange_rate(currency):
     """ Call API and extra data from response """
-    response = request_rates(currency)
+    response = request_rates(currency, exchange_rate_api_url)
     rate = extract_rate(response, currency)
     return rate 
 
-def request_rates(currency):
+def request_rates(currency, url):
     """ Perform API request, return response. """
     params = {'base': 'USD', 'symbols': currency}
-    url = 'https://api.exchangeratesapi.io/latest'
     
     try:
         response = requests.get(url, params=params).json()

@@ -51,6 +51,33 @@ class GetExchangeRateTestCase(TestCase):
     def test_request_rates_returns_none(self, mock_request_rates):
         rate = get_exchange_rate('ABC')
         self.assertIsNone(rate)
+    
+
+class RequestRatesTestCase(TestCase):
+    
+    def test_nominal_case(self):
+        response = request_rates('EUR', exchange_rate_api_url)
+        
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response) # assert no error message
+        
+        # check that appropriate rate is in response
+        self.assertIn('rates', response)
+        self.assertIn('EUR', response['rates'])
+        
+    @patch('builtins.print')
+    def test_invalid_currency(self, mock_print):
+        response = request_rates('XYZ', exchange_rate_api_url)
+        
+        self.assertIsNone(response)
+        mock_print.assert_called_once_with('Couldn\'t find an exchange rate for XYZ. Cannot get exchange rate for XYZ.')
+        
+    @patch('builtins.print')
+    def test_connection_failure(self, mock_print):
+        response = request_rates('EUR', 'https://badurl.badtld')
+        
+        self.assertIsNone(response)
+        mock_print.assert_called_once_with('Couldn\'t establish connection with API. Cannot get exchange rate for EUR.')
 
 
 if __name__ == '__main__':
