@@ -12,6 +12,7 @@ class GetTargetCurrencyTestCase(TestCase):
         expected_currency = mock_input.return_value.upper()
         
         self.assertEqual(currency, expected_currency)
+        
 
 class GetDollarAmountTestCase(TestCase):
     
@@ -78,7 +79,51 @@ class RequestRatesTestCase(TestCase):
         
         self.assertIsNone(response)
         mock_print.assert_called_once_with('Couldn\'t establish connection with API. Cannot get exchange rate for EUR.')
+        
 
+class ExtractRateTestCase(TestCase):
+    
+    def test_nominal_case(self):
+        test_response = {'rates': {'AUD': 1.4}}
+        rate = extract_rate(test_response, 'AUD')
+        
+        self.assertIsNotNone(rate)
+        self.assertEqual(rate, 1.4)
+        
+    def test_response_is_none(self):
+        rate = extract_rate(None, 'AUD')
+        self.assertIsNone(rate)
+
+
+# seems a bit silly to test these, but what the heck
+class ConvertTestCase(TestCase):
+    
+    def test_float_x_float(self):
+        converted = convert(5.0, 1.3)
+        self.assertEqual(converted, 6.5)
+    
+    def test_int_x_float(self):
+        converted = convert(5, 1.3)
+        self.assertEqual(converted, 6.5)
+        
+    def test_float_x_int(self):
+        converted = convert(5.0, 2)
+        self.assertIsInstance(converted, float)
+        self.assertEqual(converted, 10.0)
+        
+    def test_int_x_int(self):
+        converted = convert(5, 2)
+        self.assertIsInstance(converted, int)
+        self.assertEqual(converted, 10)
+        
+
+class DisplayResultTestCase(TestCase):
+    
+    @patch('builtins.print')
+    def test_nominal_case(self, mock_print):
+        display_result(5, 'CAD', 6.5)
+        mock_print.assert_called_once_with('$5.00 is equivalent to CAD 6.50')
+        
 
 if __name__ == '__main__':
     unittest.main()

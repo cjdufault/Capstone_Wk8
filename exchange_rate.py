@@ -5,6 +5,7 @@ import requests
 
 exchange_rate_api_url = 'https://api.exchangeratesapi.io/latest'
 
+
 def main():
     currency = get_target_currency()
     dollars = get_dollar_amount()
@@ -12,6 +13,7 @@ def main():
     
     if converted != None:
         display_result(dollars, currency, converted)
+        
     
 def get_target_currency():
     """ Get target currency, and return as uppercase symbol. """
@@ -23,6 +25,7 @@ def get_target_currency():
             return currency.upper()
         else:
             print('Invalid currency code')
+            
 
 def get_dollar_amount():
     """ Get number of dollars. """
@@ -33,6 +36,7 @@ def get_dollar_amount():
         # handle exception when given non-numeric input
         except ValueError:
             print('Invalid dollar value')
+            
 
 def convert_dollars_to_target(dollars, target_currency):
     """ Convert amount of dollars to target currency """
@@ -42,12 +46,14 @@ def convert_dollars_to_target(dollars, target_currency):
         return convert(dollars, exchange_rate)
     else:
         return None
+    
 
 def get_exchange_rate(currency):
     """ Call API and extra data from response """
     response = request_rates(currency, exchange_rate_api_url)
     rate = extract_rate(response, currency)
     return rate 
+
 
 def request_rates(currency, url):
     """ Perform API request, return response. """
@@ -63,10 +69,12 @@ def request_rates(currency, url):
             print(f'Couldn\'t find an exchange rate for {currency}. Cannot get exchange rate for {currency}.')
             return None
         
+        
     # handle exception if connection with API fails
     except requests.exceptions.ConnectionError as e:
         print(f'Couldn\'t establish connection with API. Cannot get exchange rate for {currency}.')
         return None
+    
 
 def extract_rate(rates, currency):
     """ Process the JSON response from the API, extract rate data. """
@@ -76,11 +84,12 @@ def extract_rate(rates, currency):
         return rates['rates'][currency]
     else:
         return None
-
+    
 
 def convert(amount, exchange_rate):
     """ Convert using the given exchange rate """
     return amount * exchange_rate
+
 
 def display_result(dollars, currency, converted):
     """ Format and display the result """
